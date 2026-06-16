@@ -8,6 +8,7 @@ and automatically optimizes system resources.
 
 git clone https://github.com/ozgurcekic/mirza ~/mirza
 cd ~/mirza && bash install.sh
+
 mirza
 
 ## What does Mirza do?
