@@ -53,7 +53,8 @@ def setup_logging(config):
 
 class MirzaDaemon:
     def __init__(self):
-        gc.disable()
+        gc.enable()
+        gc.set_threshold(0)
         self.config = ConfigManager()
         self.logger = setup_logging(self.config)
         self.logger.info("Mîrza daemon starting...")
@@ -144,6 +145,8 @@ class MirzaDaemon:
             if self._poll_count >= self._snapshot_interval:
                 self._evaluate_mode()
                 self._poll_count = 0
+                if self._poll_count % 7200 == 0:
+                    self.db.cleanup_old_data(days=90)
         except Exception as e:
             self.logger.error("Poll error: %s", e)
         return True
@@ -170,8 +173,8 @@ class MirzaDaemon:
                         "INSERT INTO usage_durations (process_name, duration_seconds, start_time, end_time) VALUES (?, ?, ?, ?)",
                         (self._current_app, duration, self._last_focus_time, event.timestamp)
                     )
-                except Exception:
-                    pass
+                except Exception as e:
+                    self.logger.error("Focus event error: %s", e)
         self._last_focus_time = event.timestamp
 
         self.logger.info("Focus: %s - %s", event.process_name, event.window_title)
@@ -213,8 +216,8 @@ class MirzaDaemon:
             n = notify2.Notification(title, message)
             n.set_timeout(5000)
             n.show()
-        except Exception:
-            pass
+        except Exception as e:
+            self.logger.error("Poll cycle error: %s", e)
 
     def start(self):
         self._running = True

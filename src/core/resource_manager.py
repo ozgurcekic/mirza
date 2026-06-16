@@ -72,7 +72,7 @@ class ResourceManager:
                     return True
                 except Exception:
                     pass
-                result = subprocess.run(cmd, shell=True, timeout=5)
+                result = subprocess.run(cmd, shell=False, timeout=5)
                 if result.returncode == 0:
                     logger.debug("Sudo write OK: %s = %s", path, value)
                     return True
