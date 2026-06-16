@@ -19,6 +19,7 @@ from src.core.mode_engine import ModeEngine, SystemMode
 from src.core.resource_manager import ResourceManager
 from src.core.device_profiler import DeviceProfiler
 from src.ui.tray_icon import TrayIcon
+from plugins.base_plugin import BasePlugin
 
 LOG_DIR = os.path.expanduser("~/.local/share/mirza")
 LOG_FILE = os.path.join(LOG_DIR, "mirza.log")
@@ -70,13 +71,30 @@ class MirzaDaemon:
         self._current_app = ""
         self._last_focus_time = None
         self._last_window_id = None
-        self._poll_interval_ms = 500
+        self._poll_interval_ms = self.config.get("polling.interval_ms", 1000)
         self._snapshot_interval = 10
         self._poll_count = 0
         self._gc_counter = 0
         self._gc_interval = 1000
 
         self._load_plugins()
+
+                # Load user plugins from plugins/user/
+        user_dir = _os.path.join(_os.path.dirname(__file__), "..", "plugins", "user")
+        if _os.path.exists(user_dir):
+            for fname in _os.listdir(user_dir):
+                if fname.endswith(".py") and not fname.startswith("_"):
+                    mod_name = f"plugins.user.{fname[:-3]}"
+                    try:
+                        mod = importlib.import_module(mod_name)
+                        for name, cls in inspect.getmembers(mod, inspect.isclass):
+                            if issubclass(cls, BasePlugin) and cls != BasePlugin:
+                                p = cls(mirza=self)
+                                p.activate()
+                                self.plugins.append(p)
+                                self.logger.info("User plugin loaded: %s", name)
+                    except Exception as e:
+                        self.logger.error("User plugin %s failed: %s", fname, e)
 
         self.logger.info("Device profile: %s", self.device_profiler.to_dict())
 
@@ -117,7 +135,11 @@ class MirzaDaemon:
                     self._last_window_id = current.window_id
                     self._on_focus_event(current)
             for dev_event in self.events.poll_udev_events():
-                pass
+                for plugin in self.plugins:
+                    try:
+                        plugin.on_device_event(dev_event)
+                    except Exception as e:
+                        self.logger.error("Plugin %s on_device_event error: %s", plugin.__class__.__name__, e)
             self._poll_count += 1
             if self._poll_count >= self._snapshot_interval:
                 self._evaluate_mode()
@@ -137,8 +159,8 @@ class MirzaDaemon:
                     "INSERT INTO focus_events (timestamp, process_name, window_title, window_geometry) VALUES (?, ?, ?, ?)",
                     (event.timestamp, event.process_name, event.window_title, str(event.geometry))
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.error("DB error: %s", e)
         # Record duration of previous app
         if self._current_app and self._last_focus_time:
             duration = event.timestamp - self._last_focus_time
@@ -156,8 +178,8 @@ class MirzaDaemon:
         for plugin in self.plugins:
             try:
                 plugin.on_focus_change(event)
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.error("DB error: %s", e)
         if self._gc_counter >= self._gc_interval:
             gc.collect()
             self._gc_counter = 0
@@ -176,8 +198,8 @@ class MirzaDaemon:
         for plugin in self.plugins:
             try:
                 plugin.on_system_snapshot(snapshot)
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.error("DB error: %s", e)
         if self._current_app:
             predicted = self.predictor.predict_next(self._current_app)
             accuracy = self.predictor.get_accuracy()
@@ -213,8 +235,8 @@ class MirzaDaemon:
         for plugin in self.plugins:
             try:
                 plugin.deactivate()
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.error("DB error: %s", e)
         self.events.stop()
         self.db.close()
         gc.collect()
