@@ -80,13 +80,13 @@ Enable in config.yml under features: my_plugin: true
 
 ## CLI Commands
 
-mirza                  Start the daemon
-mirza status           System overview
-mirza remind "text"    Add a reminder
-mirza list             List all reminders
-mirza done 3           Mark reminder 3 as done
-mirza --ui             Terminal dashboard
-mirza --log 20         Show last 20 log lines
+mirza                  Start the daemon 
+mirza status           System overview 
+mirza remind "text"    Add a reminder 
+mirza list             List all reminders 
+mirza done 3           Mark reminder 3 as done 
+mirza --ui             Terminal dashboard 
+mirza --log 20         Show last 20 log lines 
 
 ## Privacy and Security
 
