@@ -76,7 +76,9 @@ Create plugins/user/my_plugin.py:
                 self.mirza.send_notification("Firefox!", "Browser opened")
             return False
 
-Enable in config.yml under features: my_plugin: true
+Enable in config.yml under 
+    
+    features: my_plugin: true
 
 ## CLI Commands
 
