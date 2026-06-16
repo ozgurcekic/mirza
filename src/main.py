@@ -80,9 +80,9 @@ class MirzaDaemon:
         self._load_plugins()
 
                 # Load user plugins from plugins/user/
-        user_dir = _os.path.join(_os.path.dirname(__file__), "..", "plugins", "user")
-        if _os.path.exists(user_dir):
-            for fname in _os.listdir(user_dir):
+        user_dir = os.path.join(os.path.dirname(__file__), "..", "plugins", "user")
+        if os.path.exists(user_dir):
+            for fname in os.listdir(user_dir):
                 if fname.endswith(".py") and not fname.startswith("_"):
                     mod_name = f"plugins.user.{fname[:-3]}"
                     try:

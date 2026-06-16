@@ -35,7 +35,7 @@ class ResourceManager:
             logger.info("[DRY-RUN] Would run helper: %s %s", action, args)
             return True
 
-        cmd = ["sudo", self._helper_path, action] + list(args)
+        cmd = [self._helper_path, action] + list(args)
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
             if result.returncode == 0:
@@ -65,7 +65,13 @@ class ResourceManager:
             # Fall back to sudo tee
             import subprocess
             try:
-                cmd = f"echo '{value}' | sudo tee {path} > /dev/null 2>&1"
+                # Try writing directly (user is in video group)
+                try:
+                    with open(path, "w") as f:
+                        f.write(str(value))
+                    return True
+                except Exception:
+                    pass
                 result = subprocess.run(cmd, shell=True, timeout=5)
                 if result.returncode == 0:
                     logger.debug("Sudo write OK: %s = %s", path, value)
