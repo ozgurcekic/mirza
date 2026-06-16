@@ -1,6 +1,6 @@
-# Mirza - Intelligent Linux System Assistant
+# Mîrza - Intelligent Linux System Assistant
 
-Mirza is a lightweight, privacy-first system assistant for Linux.
+Mîrza is a lightweight, privacy-first system assistant for Linux.
 It watches how you use your computer, learns your habits,
 and automatically optimizes system resources.
 
@@ -11,7 +11,7 @@ cd ~/mirza && bash install.sh
 
 mirza
 
-## What does Mirza do?
+## What does Mîrza do?
 
 - Switches modes automatically: Eco when idle, Sport when gaming, Normal for daily use
 - Adjusts CPU governor, brightness, volume per mode
