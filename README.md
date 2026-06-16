@@ -6,10 +6,10 @@ and automatically optimizes system resources.
 
 ## Quick Start
 
-git clone https://github.com/ozgurcekic/mirza ~/mirza
-cd ~/mirza && bash install.sh
+    git clone https://github.com/ozgurcekic/mirza ~/mirza
+    cd ~/mirza && bash install.sh
 
-mirza
+    mirza
 
 ## What does Mîrza do?
 
