@@ -191,10 +191,16 @@ class MirzaDaemon:
         snapshot = self.events.get_system_snapshot()
         if not snapshot:
             return
+        
+        # If user manually selected a mode, don't auto-change it
+        if hasattr(self.mode_engine, '_current_mode_name') and self.mode_engine._current_mode_name:
+            self.logger.debug("User mode active: %s, skipping auto", self.mode_engine._current_mode_name)
+            return
+        
         old_mode = self.mode_engine.current_mode
         new_mode = self.mode_engine.evaluate(self._current_app, snapshot)
         if new_mode != old_mode:
-            self.logger.info("Mode: %s -> %s", old_mode.value, new_mode.value)
+            self.logger.info("Auto mode: %s -> %s", old_mode.value, new_mode.value)
             self.resource_manager.apply_mode_policy(new_mode.value)
             if self.tray:
                 self.tray.set_mode(new_mode.value)

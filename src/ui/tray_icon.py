@@ -108,12 +108,20 @@ class TrayIcon:
         logger.info("User selected mode: %s", mode_name)
         if self.mirza and hasattr(self.mirza, 'mode_engine'):
             from src.core.mode_engine import SystemMode
+            # Standard modes
             mode_map = {
                 "eco": SystemMode.ECO,
                 "normal": SystemMode.NORMAL,
                 "sport": SystemMode.SPORT,
             }
-            if self.mirza.mode_engine.force_mode(mode_map[mode_name]):
+            
+            if mode_name in mode_map:
+                if self.mirza.mode_engine.force_mode(mode_map[mode_name]):
+                    self.mirza.mode_engine._current_mode_name = mode_name
+                    self.mirza.resource_manager.apply_mode_policy(mode_name)
+            else:
+                # Custom mode: just apply policies and update UI
+                self.mirza.mode_engine._current_mode_name = mode_name
                 self.mirza.resource_manager.apply_mode_policy(mode_name)
             self.set_mode(mode_name)
 

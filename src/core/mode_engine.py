@@ -25,6 +25,7 @@ class ModeEngine:
     def __init__(self, config: dict = None):
         self.config = config or {}
         self._current_mode = SystemMode.NORMAL
+        self._current_mode_name = None
         self._last_change = 0.0
         self._cooldown = self.config.get("mode_change_cooldown_minutes", 2) * 60
         self._last_input_time = time.time()
@@ -58,6 +59,8 @@ class ModeEngine:
     @property
     def current_mode_name(self) -> str:
         """Return mode name including custom modes."""
+        if hasattr(self, '_current_mode_name'):
+            return self._current_mode_name
         return self._current_mode.value
 
     @property
@@ -83,6 +86,12 @@ class ModeEngine:
 
     def force_mode(self, mode, apply_policies=True):
         """Override with a user-selected mode."""
+        # If it's a string (custom mode), just return True for apply_policies
+        if isinstance(mode, str):
+            self._current_mode_name = mode
+            self._last_change = time.time()
+            logger.info("Mode set to custom: %s", mode)
+            return True
         return self.set_mode(mode, force=True)
 
     def user_input_detected(self):

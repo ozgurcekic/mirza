@@ -50,43 +50,32 @@ class ResourceManager:
             return False
 
     def _write_sysfs(self, path: str, value: str) -> bool:
-        """Write a value to a /sys file using sudo tee (requires root)."""
         if self._dry_run:
             logger.info("[DRY-RUN] Would write '%s' to %s", value, path)
             return True
 
         try:
-            # Try direct write first
             with open(path, "w") as f:
                 f.write(str(value))
-            logger.debug("Direct write OK: %s = %s", path, value)
             return True
         except PermissionError:
-            # Fall back to sudo tee
-            import subprocess
-            try:
-                # Try writing directly (user is in video group)
-                try:
-                    with open(path, "w") as f:
-                        f.write(str(value))
-                    return True
-                except Exception:
-                    pass
-                result = subprocess.run(cmd, shell=False, timeout=5)
-                if result.returncode == 0:
-                    logger.debug("Sudo write OK: %s = %s", path, value)
-                    return True
-                logger.error("Sudo write failed: %s", result.stderr)
-                return False
-            except Exception as e:
-                logger.error("Sudo tee failed: %s", e)
-                return False
-        except FileNotFoundError:
-            logger.debug("Sysfs path not found: %s", path)
-            return False
-        except Exception as e:
-            logger.error("Failed to write %s: %s", path, e)
-            return False
+            pass
+        except Exception:
+            pass
+
+        import subprocess
+        try:
+            result = subprocess.run(
+                ["sudo", "/usr/local/bin/mirza-helper", "write-sysfs", path, str(value)],
+                capture_output=True, timeout=5
+            )
+            if result.returncode == 0:
+                return True
+        except Exception:
+            pass
+
+        return False
+
 
     def set_cpu_governor(self, governor: str) -> bool:
         """Set CPU governor for all cores."""
