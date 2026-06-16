@@ -52,17 +52,17 @@ Each mode can be fine-tuned in Settings:
 
 ## 11 Official Plugins
 
-Battery Manager - Auto Eco on low battery
-Thermal Guard - Forces Eco if overheating
-Hardware Health - Disk SMART checks, RAM anomaly
-Mail Optimizer - Opens mail only when needed
-Service Optimizer - Stops unused background services
-Audio Profile - Volume per mode
-Wallpaper Switcher - Background per mode
-FPS Limiter - Caps FPS in Eco, unlimited in Sport
-Monitor Profile - External display detection
-Shortcut Suggester - Keybindings for frequent switches
-User Script Trigger - Your scripts on app open/close
+    Battery Manager - Auto Eco on low battery
+    Thermal Guard - Forces Eco if overheating
+    Hardware Health - Disk SMART checks, RAM anomaly
+    Mail Optimizer - Opens mail only when needed
+    Service Optimizer - Stops unused background services
+    Audio Profile - Volume per mode
+    Wallpaper Switcher - Background per mode
+    FPS Limiter - Caps FPS in Eco, unlimited in Sport
+    Monitor Profile - External display detection
+    Shortcut Suggester - Keybindings for frequent switches
+    User Script Trigger - Your scripts on app open/close
 
 ## Plugin System
 
