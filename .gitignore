@@ -1,3 +1,9 @@
 venv/
-*.pyc
 __pycache__/
+*.pyc
+*.pyo
+*.log
+.DS_Store
+*.db
+*.db-journal
+*.db-wal

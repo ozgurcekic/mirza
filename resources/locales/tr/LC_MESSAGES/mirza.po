@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Mode"
+msgstr "Mod"
+
+msgid "Eco"
+msgstr "Eko"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Sport"
+msgstr "Spor"
+
+msgid "Settings"
+msgstr "Ayarlar"
+
+msgid "Quit"
+msgstr "Çıkış"
+
+msgid "Save"
+msgstr "Kaydet"
+
+msgid "Close"
+msgstr "Kapat"
+
+msgid "General"
+msgstr "Genel"
+
+msgid "Modes"
+msgstr "Modlar"
+
+msgid "Features"
+msgstr "Özellikler"
+
+msgid "Brightness"
+msgstr "Parlaklık"
+
+msgid "Volume"
+msgstr "Ses"
+
+msgid "Battery critical"
+msgstr "Batarya kritik"
+
+msgid "Switching to Eco mode"
+msgstr "Eko moda geçiliyor"

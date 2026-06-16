@@ -1,0 +1,113 @@
+# Mîrza Configuration
+
+general:
+  assistant_name: "Mîrza"
+  language: "en"
+  widget_mode: "tray"              # tray | desktop | off
+  notification_sound: false
+  start_on_boot: true
+
+logging:
+  level: "INFO"                    # DEBUG | INFO | WARNING | ERROR
+  terminal_output: false
+  max_log_size_mb: 10
+
+prediction:
+  enabled: true
+  accuracy_threshold: 0.70         # 70% accuracy to show suggestions
+  silent_threshold: 0.70           # Below this, only background optimizations
+  proactive_threshold: 0.85        # Above this, auto-apply suggestions
+  max_history_events: 100
+  time_bucket_minutes: 30
+
+modes:
+  eco:
+    cpu_governor: "powersave"
+    gpu_profile: "low"
+    brightness_percent: 40
+    volume_percent: 50
+    app_idle_timeout_minutes: 10
+    stop_network_sync: true
+    suspend_background_apps: true
+    wallpaper: ""                  # Empty = default
+
+  normal:
+    cpu_governor: "ondemand"
+    gpu_profile: "auto"
+    brightness_percent: 70
+    volume_percent: 70
+    app_idle_timeout_minutes: 30
+    stop_network_sync: false
+    suspend_background_apps: false
+    wallpaper: ""
+
+  sport:
+    cpu_governor: "performance"
+    gpu_profile: "max"
+    brightness_percent: 100
+    volume_percent: 85
+    app_idle_timeout_minutes: 0    # Never auto-close
+    stop_network_sync: false
+    suspend_background_apps: false
+    silence_notifications: true
+    wallpaper: ""
+
+user_modes: []                     # Custom user-defined modes
+
+features:
+  mail_optimizer: false
+  workspace_arranger: false
+  ram_disk: false
+  app_preloader: false
+  audio_profile: false
+  wallpaper_switcher: false
+  network_sync_scheduler: false
+  thermal_guard: true
+  user_script_trigger: false
+  shortcut_suggester: false
+  monitor_profile: false
+  battery_manager: true
+  digital_wellbeing: false
+  service_optimizer: true
+  hardware_health: true
+  fps_limiter: false
+
+plugins:
+  official.mail_optimizer: false
+  official.workspace_arranger: false
+  official.ram_disk: false
+  official.app_preloader: false
+  official.audio_profile: false
+  official.wallpaper_switcher: false
+  official.network_sync_scheduler: false
+  official.thermal_guard: false
+  official.user_script_trigger: false
+  official.shortcut_suggester: false
+  official.monitor_profile: false
+  official.battery_manager: false
+  official.hardware_health: false
+  official.fps_limiter: false
+  official.steamdeck_tdp: false
+  official.steamdeck_fan: false
+  official.gamescope_events: false
+
+security:
+  learning_period_days: 14
+  rate_limit_seconds: 3600         # 1 hour between same-service actions
+  mode_change_cooldown_minutes: 2
+  cpu_emergency_threshold: 90
+  ram_emergency_threshold: 95
+  temp_emergency_threshold: 90
+  battery_critical_threshold: 5
+  dry_run: false
+  whitelist_path: "resources/whitelist.json"
+
+device:
+  auto_detect: true
+  device_type: ""                  # Auto-detected
+  compositor: ""                   # Auto-detected
+
+community_profiles:
+  enabled: false
+  repository_url: ""
+  auto_update: false

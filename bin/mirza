@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ~/Projects/mirza
+source venv/bin/activate
+python3 -m src.main "$@"
