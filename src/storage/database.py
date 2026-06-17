@@ -113,10 +113,14 @@ class Database:
 
     def cleanup_old_data(self, days=90):
         cutoff = (datetime.now() - timedelta(days=days)).timestamp()
-        tables = ["focus_events", "usage_durations", "driver_events",
-                  "system_snapshots"]
-        for table in tables:
-            self.execute(f"DELETE FROM {table} WHERE timestamp < ?", (cutoff,))
+        for table, col in [("focus_events", "timestamp"), 
+                           ("usage_durations", "start_time"),
+                           ("driver_events", "timestamp"),
+                           ("system_snapshots", "timestamp")]:
+            try:
+                self.execute(f"DELETE FROM {table} WHERE {col} < ?", (cutoff,))
+            except Exception:
+                pass
         logger.info("Cleaned up data older than %d days", days)
 
     def close(self):

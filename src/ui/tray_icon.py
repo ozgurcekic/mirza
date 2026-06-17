@@ -91,6 +91,11 @@ class TrayIcon:
         menu.append(Gtk.SeparatorMenuItem())
 
         # Settings
+                # Dashboard
+        dash_item = Gtk.MenuItem(label="📊  Dashboard")
+        dash_item.connect("activate", self._on_dashboard)
+        menu.append(dash_item)
+
         settings_item = Gtk.MenuItem(label="⚙  Settings")
         settings_item.connect("activate", self._on_settings)
         menu.append(settings_item)
@@ -114,7 +119,7 @@ class TrayIcon:
                 "normal": SystemMode.NORMAL,
                 "sport": SystemMode.SPORT,
             }
-            
+
             if mode_name in mode_map:
                 if self.mirza.mode_engine.force_mode(mode_map[mode_name]):
                     self.mirza.mode_engine._current_mode_name = mode_name
@@ -138,6 +143,19 @@ class TrayIcon:
             return []
         user_modes = self.mirza.config.get("user_modes", [])
         return [(m.get("name", ""), m.get("name", "").title()) for m in user_modes if m.get("name")]
+
+    def _on_dashboard(self, widget):
+        """Open system dashboard."""
+        if self.mirza:
+            from plugins.official.system_dashboard import SystemDashboard
+            for p in self.mirza.plugins:
+                if isinstance(p, SystemDashboard):
+                    p.open_dashboard()
+                    return
+            # Plugin not loaded, create standalone
+            dash = SystemDashboard(mirza=self.mirza)
+            dash.activate()
+            dash.open_dashboard()
 
     def _on_quit(self, widget):
         """Quit the application."""

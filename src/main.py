@@ -6,6 +6,9 @@ import os, sys, gc, time, signal, logging, logging.handlers, importlib
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
@@ -113,6 +116,7 @@ class MirzaDaemon:
             "audio_profile": ("plugins.official.audio_profile", "AudioProfile"),
             "wallpaper_switcher": ("plugins.official.wallpaper_switcher", "WallpaperSwitcher"),
             "fps_limiter": ("plugins.official.fps_limiter", "FPSLimiter"),
+            "system_dashboard": ("plugins.official.system_dashboard", "SystemDashboard"),
         }
         for key, (mod_path, class_name) in plugin_map.items():
             if enabled.get(key, False):
@@ -145,8 +149,13 @@ class MirzaDaemon:
             if self._poll_count >= self._snapshot_interval:
                 self._evaluate_mode()
                 self._poll_count = 0
-                if self._poll_count % 7200 == 0:
+                # Run cleanup once per day
+                if not hasattr(self, '_last_cleanup'):
+                    self._last_cleanup = 0
+                now = __import__('time').time()
+                if now - self._last_cleanup > 86400:  # 24 hours
                     self.db.cleanup_old_data(days=90)
+                    self._last_cleanup = now
         except Exception as e:
             self.logger.error("Poll error: %s", e)
         return True
@@ -250,6 +259,9 @@ class MirzaDaemon:
         self.db.close()
         gc.collect()
         self.logger.info("Goodbye!")
+        Gtk.main_quit()
+        import os
+        os._exit(0)
 
 
 def main():
