@@ -86,11 +86,13 @@ class ModeEngine:
 
     def force_mode(self, mode, apply_policies=True):
         """Override with a user-selected mode."""
-        # If it's a string (custom mode), just return True for apply_policies
         if isinstance(mode, str):
             self._current_mode_name = mode
-            self._last_change = time.time()
-            logger.info("Mode set to custom: %s", mode)
+        else:
+            self._current_mode_name = mode.value
+        self._last_change = time.time()
+        logger.info("Mode set to: %s", self._current_mode_name)
+        if isinstance(mode, str):
             return True
         return self.set_mode(mode, force=True)
 
